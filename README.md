@@ -1,2 +1,2 @@
-# SMCA-Siam
+# SCA-Siam
 The code is coming soon
