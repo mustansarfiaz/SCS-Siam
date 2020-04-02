@@ -1,2 +1,2 @@
-# SCA-Siam
+# SCS-Siam
 The code is coming soon
