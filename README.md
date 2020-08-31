@@ -38,13 +38,7 @@ python3 test.py
 
 ## Results - 
 **OTB2015**
-<center>
-    <figure>
-        <figcaption>
-            <img src="framework/result_otb.jpg" height="60%" width="100%">
-        </figcaption>
-    </figure>
-</center>
+![img2](https://github.com/mustansarfiaz/SCS-Siam/blob/master/framework/result_otb.png)
 
 ## Citing
 ```
