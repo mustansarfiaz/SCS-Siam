@@ -22,7 +22,6 @@ if __name__ == '__main__':
                                     result_dir=result_dir , report_dir = report_dir)
 #
 #        # run tracking experiments and report performance
-        #res_name='SiamFC_Epoc_{}'.format(epoch+1)
         net_path= 'model/model_e{}.pth'.format(epoch+1)
         tracker = TrackerSiamFC(net_path=net_path)
         experiments.run(tracker)
