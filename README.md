@@ -49,4 +49,15 @@ python3 test.py
     </figure>
 </center>
 
+## Reference
+@article{fiaz2020learning,
+  title={Learning Soft Mask Based Feature Fusion with Channel and Spatial Attention for Robust Visual Object Tracking},
+  author={Fiaz, Mustansar and Mahmood, Arif and Jung, Soon Ki},
+  journal={Sensors},
+  volume={20},
+  number={14},
+  pages={4021},
+  year={2020},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
 
