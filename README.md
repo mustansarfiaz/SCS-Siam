@@ -1,6 +1,7 @@
 # SCS-Siam PyTorch implementation
 ## Introduction
 This project in the direction of Visual Object Tracking.
+
 Paper: Learning Soft Mask Based Feature Fusion with Channel and Spatial Attention for Robust Visual Object Tracking
 
 **SCS-Siam architecture**
