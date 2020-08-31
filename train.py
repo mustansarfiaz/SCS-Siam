@@ -39,8 +39,8 @@ if __name__ == '__main__':
                         drop_last  = True,
                         num_workers= config.num_workers)
     # setup tracker
-    net_path = 'model/model_e2.pth'
-    tracker = TrackerSiamFC(net_path)
+    net_path = 'model/model_e32.pth'
+    tracker = TrackerSiamFC()
 
     # training loop
     for epoch in range(50):
