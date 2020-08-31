@@ -14,7 +14,7 @@ from got10k.trackers import Tracker
 
 class PAM_Module(nn.Module):
     """ Position attention module"""
-    #Ref from SAGAN
+    
     def __init__(self, in_dim=384, pooling_type= 'att'):
         super(PAM_Module, self).__init__()
         self.chanel_in = in_dim
@@ -56,18 +56,11 @@ class PAM_Module(nn.Module):
         return context
 
     def forward(self, x):
-        """
-            inputs :
-                x : input feature maps( B X C X H X W)
-            returns :
-                out : attention value + input feature
-                attention: B X (HxW) X (HxW)
-        """
+        
         m_batchsize, C, height, width = x.size()
         context =self.spatial_pool(x)
         channel_mul_term = torch.sigmoid(self.channel_mul_conv(context))
         out = x * channel_mul_term
-
 
         # out = out + x
         return out
