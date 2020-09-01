@@ -2,7 +2,7 @@
 ## Introduction
 This project in the direction of Visual Object Tracking.
 
-Paper: Learning Soft Mask Based Feature Fusion with Channel and Spatial Attention for Robust Visual Object Tracking
+[Paper](https://www.mdpi.com/1424-8220/20/14/4021): Learning Soft Mask Based Feature Fusion with Channel and Spatial Attention for Robust Visual Object Tracking
 
 **SCS-Siam architecture**
 
