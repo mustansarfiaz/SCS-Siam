@@ -1,4 +1,4 @@
-﻿from __future__ import absolute_import, division
+from __future__ import absolute_import, division
 
 import torch
 import torch.nn as nn
@@ -14,12 +14,16 @@ from got10k.trackers import Tracker
 
 class PAM_Module(nn.Module):
     """ Position attention module"""
-    
+    #Ref from SAGAN
     def __init__(self, in_dim=384, pooling_type= 'att'):
         super(PAM_Module, self).__init__()
         self.chanel_in = in_dim
         self.pooling_type = pooling_type
 
+        self.query_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim//8, kernel_size=1)
+        self.key_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim//8, kernel_size=1)
+        self.value_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim, kernel_size=1)
+        #self.gamma = nn.Parameter(torch.zeros(1))
         self.conv = nn.Conv2d(self.chanel_in, 1, kernel_size=1)
         if pooling_type == 'att':
             self.conv_mask = nn.Conv2d(self.chanel_in, 1, kernel_size=1)
@@ -27,6 +31,16 @@ class PAM_Module(nn.Module):
         else:
             self.avg_pool = nn.AdaptiveAvgPool2d(1)
 
+        self.channel_add_conv = nn.Sequential(
+                nn.Conv2d(self.chanel_in, out_channels=in_dim//8, kernel_size=1),
+                nn.BatchNorm2d(in_dim//8, eps=1e-6, momentum=0.05),
+                nn.ReLU(inplace=True),  # yapf: disable
+                nn.Conv2d(in_dim//8, self.chanel_in, kernel_size=1))
+        self.channel_mul_conv = nn.Sequential(
+                nn.Conv2d(self.chanel_in,out_channels=in_dim//8, kernel_size=1),
+                nn.BatchNorm2d(in_dim//8, eps=1e-6, momentum=0.05),
+                nn.ReLU(inplace=True),  # yapf: disable
+                nn.Conv2d(in_dim//8, self.chanel_in, kernel_size=1))
         self.softmax = nn.Softmax(dim=-1)
     def spatial_pool(self, x):
         batch, channel, height, width = x.size()
@@ -56,11 +70,27 @@ class PAM_Module(nn.Module):
         return context
 
     def forward(self, x):
-        
+        """
+            inputs :
+                x : input feature maps( B X C X H X W)
+            returns :
+                out : attention value + input feature
+                attention: B X (HxW) X (HxW)
+        """
         m_batchsize, C, height, width = x.size()
         context =self.spatial_pool(x)
         channel_mul_term = torch.sigmoid(self.channel_mul_conv(context))
         out = x * channel_mul_term
+      
+        # m_batchsize, C, height, width = x.size()
+        # proj_query = self.query_conv(x).view(m_batchsize, -1, width*height).permute(0, 2, 1)
+        # proj_key = self.key_conv(x).view(m_batchsize, -1, width*height)
+        # energy = torch.bmm(proj_query, proj_key)
+        # attention = self.softmax(energy)
+        # proj_value = self.value_conv(x).view(m_batchsize, -1, width*height)
+
+        # out = torch.bmm(proj_value, attention.permute(0, 2, 1))
+        # out = out.view(m_batchsize, C, height, width)
 
         # out = out + x
         return out
@@ -136,9 +166,10 @@ class SiamFC(nn.Module):
         z = self.feature1(z)
         z_noise = self.feature2(z_noise)
         z = torch.add(z, z_noise)
+        #zf_noise = self.feature3(z_noise)
         zf = self.feature3(z)
-        z_catt= self.ARM(zf)
-        z_pam = self.pam(z_catt)
+        #z_catt= self.ARM(zf)
+        z_pam = self.pam(zf)
         
         out = torch.add(zf, z_pam)
 
@@ -158,7 +189,7 @@ class SiamFC(nn.Module):
 
         # fast cross correlation
         out = self.fast_cross(x_feat, z_feat, "out", 0.1)
-        
+        #out = torch.add(cross4, out)
 
         # adjust the scale of responses
         out = 0.001 * out + 0.0
@@ -198,7 +229,7 @@ class TrackerSiamFC(Tracker):
 
         # setup GPU device if available
         self.cuda = torch.cuda.is_available()
-        self.device = torch.device('cuda:3' if self.cuda else 'cpu')
+        self.device = torch.device('cuda:0' if self.cuda else 'cpu')
 
         # setup model
         self.net = SiamFC()
