@@ -29,9 +29,7 @@ python3 train.py
 ```
 
 ## How to Run - Testing
-1. Download pretrained `model_e32.pth` from [Google-Drive] (https://drive.google.com/file/d/1HkTxVQ58b0dAPHbySI3wSdBTLudpzqsy/view?usp=sharing), and put the file under `model/model_e32.pth`.
-
-2. Run the **test.py** script:
+1 Run the **test.py** script:
 ```
 python3 test.py
 ```
